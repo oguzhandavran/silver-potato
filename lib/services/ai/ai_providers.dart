@@ -1,13 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-import 'ai_orchestrator.dart';
-import 'clients/claude_ai_client.dart';
-import 'clients/gemini_ai_client.dart';
-import 'clients/offline_ai_client.dart';
-import 'clients/openai_ai_client.dart';
-import 'settings/ai_settings_store.dart';
-import 'settings/secure_ai_settings_store.dart';
+import 'package:flutter_shell/services/ai/ai_orchestrator.dart';
+import 'package:flutter_shell/services/ai/clients/claude_ai_client.dart';
+import 'package:flutter_shell/services/ai/clients/gemini_ai_client.dart';
+import 'package:flutter_shell/services/ai/clients/offline_ai_client.dart';
+import 'package:flutter_shell/services/ai/clients/openai_ai_client.dart';
+import 'package:flutter_shell/services/ai/settings/ai_settings_store.dart';
+import 'package:flutter_shell/services/ai/settings/secure_ai_settings_store.dart';
 
 final aiSettingsStoreProvider = Provider<AiSettingsStore>((ref) {
   return const SecureAiSettingsStore();

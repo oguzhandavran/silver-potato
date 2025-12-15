@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../services/app_state.dart';
-import '../suggestions/suggestions_screen.dart';
+
+import 'package:flutter_shell/features/context_onboarding/context_onboarding_screen.dart';
+import 'package:flutter_shell/features/suggestions/suggestions_screen.dart';
+import 'package:flutter_shell/services/app_state.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -52,6 +55,20 @@ class HomeScreen extends ConsumerWidget {
                 icon: const Icon(Icons.lightbulb_outline),
                 label: const Text('View Suggestions'),
               ),
+              if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) ...[
+                const SizedBox(height: 12),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const ContextOnboardingScreen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.privacy_tip_outlined),
+                  label: const Text('Context collectors (Android)'),
+                ),
+              ],
               const SizedBox(height: 16),
               if (appState.errorMessage != null)
                 Container(

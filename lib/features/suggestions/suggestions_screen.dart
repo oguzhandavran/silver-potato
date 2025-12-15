@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'suggestions_provider.dart';
+import 'package:flutter_shell/features/suggestions/suggestions_provider.dart';
 
 class SuggestionsScreen extends ConsumerWidget {
   const SuggestionsScreen({Key? key}) : super(key: key);

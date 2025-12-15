@@ -6,6 +6,12 @@
     <!-- Required to record audio input for voice commands/features -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <!-- Required for the foreground microphone service (Android 9+) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <!-- Required for foreground services that use the microphone (Android 14+) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+
     <!-- Required to monitor system accessibility features and user interaction patterns -->
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
 
@@ -35,6 +41,36 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Android context collectors (stubs) -->
+        <service
+            android:name="com.example.flutter_shell.context.ContextNotificationListenerService"
+            android:exported="true"
+            android:label="Context Notification Listener"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name="com.example.flutter_shell.context.ContextAccessibilityService"
+            android:exported="true"
+            android:label="Context Accessibility Service"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/context_accessibility_service" />
+        </service>
+
+        <service
+            android:name="com.example.flutter_shell.context.ContextAudioFeaturesService"
+            android:exported="false"
+            android:foregroundServiceType="microphone" />
+
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

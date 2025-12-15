@@ -1,4 +1,4 @@
-import 'ai_models.dart';
+import 'package:flutter_shell/services/ai/ai_models.dart';
 
 class AiClientMeta {
   final AiModelRef model;

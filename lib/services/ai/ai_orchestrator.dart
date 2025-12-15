@@ -1,9 +1,9 @@
 import 'package:meta/meta.dart';
 
-import 'ai_client.dart';
-import 'ai_models.dart';
-import 'settings/ai_settings.dart';
-import 'settings/ai_settings_store.dart';
+import 'package:flutter_shell/services/ai/ai_client.dart';
+import 'package:flutter_shell/services/ai/ai_models.dart';
+import 'package:flutter_shell/services/ai/settings/ai_settings.dart';
+import 'package:flutter_shell/services/ai/settings/ai_settings_store.dart';
 
 class AiRoutingDecision {
   final AiClientMeta selected;
