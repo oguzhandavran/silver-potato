@@ -34,6 +34,9 @@ dependencies:
   # AI/LLM
   google_generative_ai: ^0.4.0
 
+  # Secure storage for API keys
+  flutter_secure_storage: ^9.2.4
+
   # HTTP client
   http: ^1.1.0
 
