@@ -32,6 +32,12 @@ lib/
     └── README.md
 ```
 
+## Quick Links
+
+- **[Build & Release Guide](BUILD_AND_RELEASE.md)**: Complete instructions for building signed APKs
+- **[Android Tablet Installation](ANDROID_TABLET_INSTALL.md)**: Step-by-step installation guide for end users
+- **[Build Script](scripts/build_release.sh)**: Automated build script with validation
+
 ## Getting Started
 
 ### Prerequisites
@@ -41,6 +47,7 @@ lib/
 - Android SDK 21+ (minSdkVersion)
 - Android Gradle Plugin compatible with Flutter 3
 - Kotlin 1.9.10
+- JDK 11 or higher (required for Android builds)
 
 ### Installation
 
@@ -171,9 +178,50 @@ The app supports long-running background tasks using `flutter_background_service
 - Voice command listening
 - Sensor monitoring
 
+## Integrated Features
+
+This Flutter Shell application includes the following merged feature branches:
+
+### 1. Bootstrap & Core Structure
+- Flutter 3 foundation with Material 3 design
+- Android-specific configuration and permissions
+- Core dependencies and project structure
+
+### 2. Android Background Collectors
+- NotificationListenerService integration
+- AccessibilityService for text extraction
+- UsageStatsManager for app usage tracking
+- Audio feature monitoring service
+- See [docs/android-context-collectors.md](docs/android-context-collectors.md)
+
+### 3. Hive Storage & Context Repository
+- Encrypted local storage using Hive
+- Context event repository with type adapters
+- Secure storage for API keys
+- Event persistence and querying
+
+### 4. AI Orchestrator
+- Multi-provider AI routing (Gemini, OpenAI, Claude)
+- Intelligent model selection based on task type
+- Streaming support for real-time responses
+- Cost optimization and offline fallback
+- See [docs/ai-orchestrator-guide.md](docs/ai-orchestrator-guide.md)
+
+### 5. Suggestion Engine MVP
+- Temporal profile-aware suggestions (morning, afternoon, evening, night)
+- Context-driven suggestion generation
+- Manual approval workflow (auto-send disabled by default)
+- Engagement tracking and learning
+- See [docs/suggestion_engine_extension_guide.md](docs/suggestion_engine_extension_guide.md)
+
 ## API Integration
 
-The app integrates with Google Generative AI for intelligent suggestions. Set up your API key in the environment or configuration file before using AI features.
+The app integrates with multiple AI providers:
+- **Google Gemini**: General tasks, cost-effective
+- **OpenAI GPT-4**: Complex reasoning, creative tasks
+- **Anthropic Claude**: Code generation, analysis
+
+Set up your API keys using the `.env` file (see `.env.example` for template) or through the app's settings.
 
 ## Contributing
 

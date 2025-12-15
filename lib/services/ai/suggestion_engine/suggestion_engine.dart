@@ -119,12 +119,12 @@ class SuggestionEngine {
     }
 
     try {
-      final suggestion = await _generateAiSuggestion(type, event, profile);
-      suggestion.when(
-        approved: (s) => _addApprovedSuggestion(s),
-        pending: (s) => _addPendingSuggestion(s),
-        rejected: (id) {/* ignored */},
-      );
+      final result = await _generateAiSuggestion(type, event, profile);
+      if (result is _Approved) {
+        _addApprovedSuggestion(result.suggestion);
+      } else if (result is _Pending) {
+        _addPendingSuggestion(result.suggestion);
+      }
     } catch (e) {
       // Log error and potentially create fallback suggestion
       print('Error generating suggestion: $e');

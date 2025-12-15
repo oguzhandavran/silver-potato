@@ -81,7 +81,7 @@ class Suggestion {
       'type': type.key,
       'content': content,
       'priority': priority.key,
-      'suggestedFor': suggestedProfile.key,
+      'suggestedFor': suggestedFor.key,
       'createdAt': createdAt.millisecondsSinceEpoch,
       'context': context,
       'requiresApproval': requiresApproval,
@@ -131,7 +131,7 @@ class Suggestion {
 class TemporalProfileStats {
   final Map<SuggestionType, int> interactionCounts = {};
   final Map<SuggestionType, double> engagementScores = {};
-  final DateTime lastActivity;
+  DateTime lastActivity;
 
   TemporalProfileStats({required this.lastActivity});
 

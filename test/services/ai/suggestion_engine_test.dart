@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'package:flutter_shell/services/ai/suggestion_engine/models/suggestion_models.dart';
 import 'package:flutter_shell/services/context/context_event.dart';
 import 'package:test/test.dart';
 import 'package:flutter_shell/services/ai/suggestion_engine/suggestion_engine.dart';
 import 'package:flutter_shell/services/ai/ai_orchestrator.dart';
+import 'package:flutter_shell/services/ai/ai_models.dart';
 import 'package:flutter_shell/services/context/context_repository.dart';
 
 class MockContextRepository implements ContextRepository {
