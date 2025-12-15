@@ -1,0 +1,23 @@
+name: hive_context_storage
+description: Hive-based local storage system with encryption for context events, suggestions, and user preferences
+version: 1.0.0
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  crypto: ^3.0.3
+  shared_preferences: ^2.2.2
+  equatable: ^2.0.5
+
+dev_dependencies:
+  test: ^1.24.0
+  hive_test: ^1.0.1
+  mockito: ^5.4.3
+  build_runner: ^2.4.7
+  lints: ^2.1.0
+
+flutter:
+  uses-material-design: true
