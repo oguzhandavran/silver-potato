@@ -1,7 +1,7 @@
 import 'package:google_generative_ai/google_generative_ai.dart';
 
-import '../ai_client.dart';
-import '../ai_models.dart';
+import 'package:flutter_shell/services/ai/ai_client.dart';
+import 'package:flutter_shell/services/ai/ai_models.dart';
 
 class GeminiAiClient implements AiClient {
   @override

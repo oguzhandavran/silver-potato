@@ -1,5 +1,5 @@
-import '../ai_client.dart';
-import '../ai_models.dart';
+import 'package:flutter_shell/services/ai/ai_client.dart';
+import 'package:flutter_shell/services/ai/ai_models.dart';
 
 class OfflineAiClient implements AiClient {
   @override

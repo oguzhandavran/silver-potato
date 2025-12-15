@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../services/ai/ai_models.dart';
-import '../../services/ai/ai_orchestrator.dart';
-import '../../services/ai/ai_providers.dart';
+import 'package:flutter_shell/services/ai/ai_models.dart';
+import 'package:flutter_shell/services/ai/ai_orchestrator.dart';
+import 'package:flutter_shell/services/ai/ai_providers.dart';
 
 class AiDemoState {
   static const _unset = Object();

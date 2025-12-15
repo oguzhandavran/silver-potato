@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import '../ai_client.dart';
-import '../ai_models.dart';
+import 'package:flutter_shell/services/ai/ai_client.dart';
+import 'package:flutter_shell/services/ai/ai_models.dart';
 
 class OpenAiClient implements AiClient {
   @override

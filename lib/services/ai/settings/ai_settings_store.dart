@@ -1,4 +1,4 @@
-import 'ai_settings.dart';
+import 'package:flutter_shell/services/ai/settings/ai_settings.dart';
 
 abstract class AiSettingsStore {
   Future<AiSettings> load();

@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import 'ai_settings.dart';
-import 'ai_settings_store.dart';
+import 'package:flutter_shell/services/ai/settings/ai_settings.dart';
+import 'package:flutter_shell/services/ai/settings/ai_settings_store.dart';
 
 class SecureAiSettingsStore implements AiSettingsStore {
   static const _storageKey = 'ai_settings_v1';

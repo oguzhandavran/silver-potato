@@ -70,9 +70,17 @@ The project is configured to target Android with the following versions:
 - **targetSdkVersion**: 34
 - **Kotlin**: 1.9.10
 
+##### Android Context Collectors (stubs)
+
+This repository includes Android-only stub integrations for context capture (NotificationListenerService, AccessibilityService, UsageStatsManager summaries, and a foreground audio feature service).
+
+See: [`docs/android-context-collectors.md`](docs/android-context-collectors.md)
+
 Required Android permissions are declared in `android/app/src/main/AndroidManifest.xml`:
 - **POST_NOTIFICATIONS**: Required for push notifications and background notifications
 - **RECORD_AUDIO**: Required for voice commands and audio recording features
+- **FOREGROUND_SERVICE**: Required to run long-lived foreground services
+- **FOREGROUND_SERVICE_MICROPHONE**: Required for foreground services that use the microphone (Android 14+)
 - **QUERY_ALL_PACKAGES**: Required to monitor system accessibility features and user behavior
 - **PACKAGE_USAGE_STATS**: Required for app usage analytics and tracking
 - **WAKE_LOCK**: Required to keep the app running in the background

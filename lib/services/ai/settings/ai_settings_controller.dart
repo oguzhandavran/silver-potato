@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../ai_models.dart';
-import '../ai_providers.dart';
-import 'ai_settings.dart';
-import 'ai_settings_store.dart';
+import 'package:flutter_shell/services/ai/ai_models.dart';
+import 'package:flutter_shell/services/ai/ai_providers.dart';
+import 'package:flutter_shell/services/ai/settings/ai_settings.dart';
+import 'package:flutter_shell/services/ai/settings/ai_settings_store.dart';
 
 final aiSettingsControllerProvider = StateNotifierProvider<AiSettingsController, AsyncValue<AiSettings>>((ref) {
   final store = ref.watch(aiSettingsStoreProvider);
