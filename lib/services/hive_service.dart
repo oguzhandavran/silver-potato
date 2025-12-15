@@ -8,6 +8,12 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// Import generated adapters
+import '../models/context_event.g.dart';
+import '../models/suggestion.g.dart';
+import '../models/user_preference.g.dart';
+import '../models/message_summary.g.dart';
+
 /// Service for initializing and managing Hive with encryption
 class HiveService {
   static const String _encryptionKeyKey = 'hive_encryption_key';
@@ -133,23 +139,18 @@ class HiveService {
 
   /// Register all Hive adapters
   Future<void> _registerAdapters() async {
-    // This would normally be done by build_runner, but we'll do it manually
-    // for the example. In a real app, use: `flutter packages pub run build_runner build`
+    // Register the generated type adapters
     if (!Hive.isAdapterRegistered(0)) {
-      // ContextEvent adapter would be generated here
-      // Hive.registerAdapter(ContextEventAdapter());
+      Hive.registerAdapter(ContextEventAdapter());
     }
     if (!Hive.isAdapterRegistered(1)) {
-      // Suggestion adapter
-      // Hive.registerAdapter(SuggestionAdapter());
+      Hive.registerAdapter(SuggestionAdapter());
     }
     if (!Hive.isAdapterRegistered(2)) {
-      // UserPreference adapter
-      // Hive.registerAdapter(UserPreferenceAdapter());
+      Hive.registerAdapter(UserPreferenceAdapter());
     }
     if (!Hive.isAdapterRegistered(3)) {
-      // MessageSummary adapter
-      // Hive.registerAdapter(MessageSummaryAdapter());
+      Hive.registerAdapter(MessageSummaryAdapter());
     }
   }
 
