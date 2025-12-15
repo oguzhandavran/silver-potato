@@ -137,5 +137,10 @@ lib/generated_plugin_registrant.dart
 # Coverage
 coverage/
 
+# Environment files
+.env
+.env.*
+!.env.example
+
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages

@@ -1,6 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../services/ai/ai_models.dart';
+import '../../services/ai/ai_orchestrator.dart';
+import '../../services/ai/ai_providers.dart';
+
 class SuggestionsState {
+  static const _unset = Object();
+
   final List<String> suggestions;
   final bool isLoading;
   final String? error;
@@ -14,34 +20,50 @@ class SuggestionsState {
   SuggestionsState copyWith({
     List<String>? suggestions,
     bool? isLoading,
-    String? error,
+    Object? error = _unset,
   }) {
     return SuggestionsState(
       suggestions: suggestions ?? this.suggestions,
       isLoading: isLoading ?? this.isLoading,
-      error: error ?? this.error,
+      error: error == _unset ? this.error : error as String?,
     );
   }
 }
 
 final suggestionsStateProvider = StateNotifierProvider<SuggestionsStateNotifier, SuggestionsState>((ref) {
-  return SuggestionsStateNotifier();
+  final orchestrator = ref.watch(aiOrchestratorProvider);
+  return SuggestionsStateNotifier(orchestrator);
 });
 
 class SuggestionsStateNotifier extends StateNotifier<SuggestionsState> {
-  SuggestionsStateNotifier() : super(const SuggestionsState());
+  final AiOrchestrator _orchestrator;
+
+  SuggestionsStateNotifier(this._orchestrator) : super(const SuggestionsState());
 
   Future<void> fetchSuggestions() async {
     state = state.copyWith(isLoading: true, error: null);
+
     try {
-      // TODO: Implement API call to Google Generative AI
-      await Future.delayed(const Duration(milliseconds: 500));
+      final response = await _orchestrator.chat(
+        const AiChatRequest(
+          taskType: AiTaskType.summarize,
+          messages: [
+            AiChatMessage.user(
+              'Generate 3 short suggestions for exploring a Flutter app. Return one per line.',
+            ),
+          ],
+        ),
+      );
+
+      final parsed = _parseSuggestions(response.text);
       state = state.copyWith(
-        suggestions: [
-          'Try exploring the settings',
-          'Check the documentation',
-          'Enable background services',
-        ],
+        suggestions: parsed.isEmpty
+            ? const [
+                'Try exploring the settings',
+                'Check the documentation',
+                'Enable background services',
+              ]
+            : parsed,
         isLoading: false,
       );
     } catch (e) {
@@ -53,6 +75,16 @@ class SuggestionsStateNotifier extends StateNotifier<SuggestionsState> {
   }
 
   void clearSuggestions() {
-    state = state.copyWith(suggestions: const []);
+    state = state.copyWith(suggestions: const [], error: null);
+  }
+
+  List<String> _parseSuggestions(String text) {
+    return text
+        .split(RegExp(r'\r?\n'))
+        .map((line) => line.trim())
+        .map((line) => line.replaceFirst(RegExp(r'^(?:[-*•]|\d+\.)\s+'), ''))
+        .where((line) => line.isNotEmpty)
+        .take(10)
+        .toList(growable: false);
   }
 }
