@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_shell/services/ai/ai_orchestrator.dart';
+import 'package:flutter_shell/services/ai/ai_providers.dart';
 import 'package:flutter_shell/services/context/context_repository.dart';
+import 'package:flutter_shell/services/context/context_providers.dart';
 import 'package:flutter_shell/services/ai/suggestion_engine/models/suggestion_models.dart';
 import 'package:flutter_shell/services/ai/suggestion_engine/suggestion_engine.dart';
 
