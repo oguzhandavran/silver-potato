@@ -1,0 +1,15 @@
+# This file tracks properties of this Flutter project.
+# Used by Flutter tooling to track customization of Flutter framework builds.
+#
+# Important: This file must NEVER be manually edited — only use `flutter` subcommands
+# to modify this file.
+
+version:
+  revision: "3f63180b0b3ac48ebc8aaac3d88e48e3f32e2e1c"
+  channel: "stable"
+
+project_type: app
+
+# This file customizes Flutter-level build settings.
+# Follow the format described at https://github.com/flutter/packages/tree/main/packages/flutter_lints
+flutter:
