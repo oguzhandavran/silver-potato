@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base href="$FLUTTER_BASE_HREF">
+    <meta charset="UTF-8">
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+    <meta name="description" content="A Flutter shell application with integrated AI capabilities.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Flutter Shell">
+    <link rel="app-touch-icon" href="icons/Icon-192.png">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <title>Flutter Shell</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" type="text/css" href="splash/style.css">
+    <meta name="theme-color" content="#2196F3">
+    <script defer src="flutter.js"></script>
+</head>
+<body>
+    <picture id="splash">
+        <source srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x" media="(prefers-color-scheme: light)">
+        <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x" media="(prefers-color-scheme: dark)">
+        <img class="center" src="splash/img/light-1x.png" />
+    </picture>
+    <script>
+        window.addEventListener('hashchange', () => {
+            if (window.location.hash.match(/^#splash($|\?)/)) {
+                document.getElementById('splash')?.remove();
+            }
+        });
+        window.addEventListener('load', () => {
+            _flutter.loader.loadEntrypoint({
+                serviceWorkerSettings: {
+                    serviceWorkerUrl: 'flutter_service_worker.js',
+                },
+                onEntrypointLoaded: function(engineInitializer) {
+                    engineInitializer.initializeEngine().then(function(appRunner) {
+                        appRunner.runApp();
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

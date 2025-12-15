@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Required for push notifications and background services -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Required to record audio input for voice commands/features -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- Required to monitor system accessibility features and user interaction patterns -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
+    <!-- Required to access app usage statistics for analytics and user behavior tracking -->
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+
+    <!-- Required to keep the app running in the background and maintain services -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- Required to access internet for API calls and data synchronization -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:label="flutter_shell"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+    </application>
+</manifest>
