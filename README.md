@@ -175,6 +175,48 @@ The app supports long-running background tasks using `flutter_background_service
 
 The app integrates with Google Generative AI for intelligent suggestions. Set up your API key in the environment or configuration file before using AI features.
 
+## CI/CD and Versioning
+
+This project uses GitHub Actions for automated builds and semantic versioning.
+
+### Automatic Versioning
+
+On every push to `main`, the workflow automatically:
+- ✅ Increments the patch version (1.0.0 → 1.0.1 → 1.0.2)
+- ✅ Runs tests and analysis
+- ✅ Builds a release APK
+- ✅ Creates a GitHub Release with the APK
+
+### Manual Version Bumps
+
+For **minor** or **major** version bumps, create a git tag before pushing:
+
+```bash
+# Bump to v1.3.0 (new features)
+git tag v1.3.0
+git push origin v1.3.0
+
+# Bump to v2.0.0 (breaking changes)
+git tag v2.0.0
+git push origin v2.0.0
+```
+
+### Documentation
+
+- 📖 [Version Management Guide](docs/version-management.md) - Complete versioning guide
+- 🔐 [GitHub Secrets Setup](docs/github-secrets-setup.md) - APK signing configuration
+- ⚡ [Quick Reference](docs/version-quick-reference.md) - Common commands
+
+### APK Signing
+
+Configure these GitHub Secrets for production builds:
+- `KEYSTORE_BASE64` - Base64-encoded keystore file
+- `KEY_STORE_PASSWORD` - Keystore password
+- `KEY_PASSWORD` - Key password
+- `KEY_ALIAS` - Key alias name
+
+See the [GitHub Secrets Setup Guide](docs/github-secrets-setup.md) for detailed instructions.
+
 ## Contributing
 
 When adding new features:

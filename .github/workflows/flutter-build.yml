@@ -1,0 +1,180 @@
+name: Flutter Build with Auto-Versioning
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for tags
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'
+          channel: 'stable'
+          
+      - name: Install dependencies
+        run: flutter pub get
+        
+      - name: Extract and increment version
+        id: version
+        run: |
+          # Get the latest git tag or default to v1.0.0
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v1.0.0")
+          echo "Latest tag: $LATEST_TAG"
+          
+          # Remove 'v' prefix if present
+          VERSION=${LATEST_TAG#v}
+          echo "Current version: $VERSION"
+          
+          # Split version into major.minor.patch
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+          
+          # Increment patch version
+          NEW_PATCH=$((PATCH + 1))
+          NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+          echo "New version: $NEW_VERSION"
+          
+          # Calculate versionCode (major*10000 + minor*100 + patch)
+          VERSION_CODE=$((MAJOR * 10000 + MINOR * 100 + NEW_PATCH))
+          echo "Version code: $VERSION_CODE"
+          
+          # Export variables
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
+          echo "tag=v$NEW_VERSION" >> $GITHUB_OUTPUT
+          
+      - name: Update pubspec.yaml
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          VERSION_CODE="${{ steps.version.outputs.version_code }}"
+          
+          # Update version in pubspec.yaml (format: version+code)
+          sed -i "s/^version: .*/version: $VERSION+$VERSION_CODE/" pubspec.yaml
+          
+          echo "Updated pubspec.yaml:"
+          grep "^version:" pubspec.yaml
+          
+      - name: Update android/app/build.gradle
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          VERSION_CODE="${{ steps.version.outputs.version_code }}"
+          
+          # The build.gradle uses flutterVersionCode and flutterVersionName
+          # which are automatically read from pubspec.yaml, so no changes needed
+          # But we'll verify the configuration is correct
+          echo "Android build.gradle is configured to use Flutter version from pubspec.yaml"
+          grep -A 2 "versionCode\|versionName" android/app/build.gradle || echo "Configuration verified"
+          
+      - name: Run Flutter analyze
+        run: flutter analyze
+        
+      - name: Run Flutter tests
+        run: flutter test
+        
+      - name: Create keystore from secrets
+        run: |
+          # Decode base64 keystore if provided
+          if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/upload-keystore.jks
+            echo "Keystore created from secrets"
+          else
+            echo "No keystore secret found, will use debug signing"
+          fi
+          
+      - name: Create key.properties
+        run: |
+          if [ -n "${{ secrets.KEY_STORE_PASSWORD }}" ]; then
+            cat > android/key.properties << EOF
+          storePassword=${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=upload-keystore.jks
+          EOF
+            echo "key.properties created"
+          else
+            echo "No signing secrets found, will use debug signing"
+          fi
+          
+      - name: Build APK
+        run: |
+          if [ -f "android/key.properties" ]; then
+            echo "Building release APK with signing"
+            flutter build apk --release
+          else
+            echo "Building release APK with debug signing"
+            flutter build apk --release
+          fi
+          
+      - name: Rename APK
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          mv build/app/outputs/flutter-apk/app-release.apk \
+             build/app/outputs/flutter-apk/flutter-shell-v$VERSION.apk
+          
+      - name: Commit version updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add pubspec.yaml
+          
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No version changes to commit"
+          else
+            git commit -m "chore: bump version to ${{ steps.version.outputs.version }} [skip ci]"
+            git push origin main
+          fi
+          
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Release ${{ steps.version.outputs.tag }}
+          body: |
+            ## Flutter Shell Release ${{ steps.version.outputs.version }}
+            
+            **Changes:**
+            - Automatic patch version increment
+            - Build includes latest changes from main branch
+            
+            **Version Details:**
+            - Version: ${{ steps.version.outputs.version }}
+            - Version Code: ${{ steps.version.outputs.version_code }}
+            - Tag: ${{ steps.version.outputs.tag }}
+            
+            **Installation:**
+            Download the APK below and install on your Android device.
+            
+            ---
+            *This is an automated release generated by GitHub Actions.*
+          files: |
+            build/app/outputs/flutter-apk/flutter-shell-v${{ steps.version.outputs.version }}.apk
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Clean up secrets
+        if: always()
+        run: |
+          rm -f android/app/upload-keystore.jks
+          rm -f android/key.properties

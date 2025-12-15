@@ -3,3 +3,8 @@
 .gradle
 .idea/
 local.properties
+
+# Keystore files
+*.jks
+*.keystore
+key.properties
