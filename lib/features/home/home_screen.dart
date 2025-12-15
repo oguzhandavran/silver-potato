@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_shell/features/context_onboarding/context_onboarding_screen.dart';
 import 'package:flutter_shell/features/suggestions/suggestions_screen.dart';
+import 'package:flutter_shell/features/suggestions/suggestion_approval_screen.dart';
 import 'package:flutter_shell/services/app_state.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -54,6 +55,18 @@ class HomeScreen extends ConsumerWidget {
                 },
                 icon: const Icon(Icons.lightbulb_outline),
                 label: const Text('View Suggestions'),
+              ),
+              const SizedBox(height: 12),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const SuggestionApprovalScreen(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.approval),
+                label: const Text('AI Suggestion Engine'),
               ),
               if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) ...[
                 const SizedBox(height: 12),
