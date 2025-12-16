@@ -1,29 +1,18 @@
 pluginManagement {
-    def flutterSdkPath = {
-        def properties = new Properties()
-        def localPropertiesFile = file("local.properties")
-        if (localPropertiesFile.exists()) {
-            localPropertiesFile.withInputStream { properties.load(it) }
-        }
-        def sdkPath = properties.getProperty("flutter.sdk")
-        assert sdkPath != null : "flutter.sdk not set in local.properties"
-        return sdkPath
-    }()
-
-    // 🔹 Flutter Gradle plugin'lerini SDK içinden al
-    includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
-
     repositories {
         google()
         mavenCentral()
         gradlePluginPortal()
     }
+}
 
-    // 🔹 ANDROID & KOTLIN PLUGIN VERSİYONLARI (EKSİK OLAN KISIM BUYDU)
-    plugins {
-        id "com.android.application" version "8.2.2"
-        id "org.jetbrains.kotlin.android" version "1.9.22"
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
     }
 }
 
+rootProject.name = "silver_potato"
 include ":app"
