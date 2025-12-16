@@ -10,12 +10,19 @@ pluginManagement {
         return sdkPath
     }()
 
+    // 🔹 Flutter Gradle plugin'lerini SDK içinden al
     includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
 
     repositories {
         google()
         mavenCentral()
         gradlePluginPortal()
+    }
+
+    // 🔹 ANDROID & KOTLIN PLUGIN VERSİYONLARI (EKSİK OLAN KISIM BUYDU)
+    plugins {
+        id "com.android.application" version "8.2.2"
+        id "org.jetbrains.kotlin.android" version "1.9.22"
     }
 }
 
