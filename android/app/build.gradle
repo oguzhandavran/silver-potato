@@ -1,39 +1,27 @@
-plugins {
-    id "com.android.application"
-    id "org.jetbrains.kotlin.android"
-    id "dev.flutter.flutter-gradle-plugin"
-}
-
-android {
-    namespace "com.example.silver_potato"
-    compileSdk flutter.compileSdkVersion
-
-    defaultConfig {
-        applicationId "com.example.silver_potato"
-        minSdk flutter.minSdkVersion
-        targetSdk flutter.targetSdkVersion
-        versionCode flutter.versionCode
-        versionName flutter.versionName
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
     }
 
-    signingConfigs {
-        release {
-            storeFile file("release.keystore")
-            storePassword System.getenv("KEY_STORE_PASSWORD")
-            keyAlias System.getenv("KEY_ALIAS")
-            keyPassword System.getenv("KEY_PASSWORD")
-        }
-    }
+    // 🔥 FLUTTER GRADLE PLUGIN BURADAN GELİR
+    includeBuild("../flutter/packages/flutter_tools/gradle")
 
-    buildTypes {
-        release {
-            signingConfig signingConfigs.release
-            minifyEnabled false
-            shrinkResources false
-        }
+    plugins {
+        id "com.android.application" version "8.2.2" apply false
+        id "com.android.library" version "8.2.2" apply false
+        id "org.jetbrains.kotlin.android" version "1.9.22" apply false
     }
 }
 
-flutter {
-    source "../.."
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
 }
+
+rootProject.name = "silver_potato"
+include(":app")
