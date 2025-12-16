@@ -1,24 +1,24 @@
 plugins {
     id "com.android.application"
-    id "org.jetbrains.kotlin.android"
+    id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
 }
 
 android {
-    namespace "com.example.silver_potato"   // ← paket adına göre DEĞİŞTİR
-    compileSdk 34
+    namespace "com.example.silver_potato"
+    compileSdkVersion flutter.compileSdkVersion
 
     defaultConfig {
-        applicationId "com.example.silver_potato" // ← paket adına göre DEĞİŞTİR
-        minSdk 21
-        targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        applicationId "com.example.silver_potato"
+        minSdkVersion flutter.minSdkVersion
+        targetSdkVersion flutter.targetSdkVersion
+        versionCode flutter.versionCode
+        versionName flutter.versionName
     }
 
     signingConfigs {
         release {
-            storeFile file("jarvis-release.keystore")
+            storeFile file("release.keystore")
             storePassword System.getenv("KEY_STORE_PASSWORD")
             keyAlias System.getenv("KEY_ALIAS")
             keyPassword System.getenv("KEY_PASSWORD")
@@ -30,19 +30,7 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled false
             shrinkResources false
-            proguardFiles getDefaultProguardFile(
-                    'proguard-android-optimize.txt'),
-                    'proguard-rules.pro'
         }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
     }
 }
 
@@ -51,5 +39,4 @@ flutter {
 }
 
 dependencies {
-    // Flutter zaten bağımlılıkları yönetiyor
 }
