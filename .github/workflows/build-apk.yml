@@ -1,76 +1,69 @@
-name: Build Flutter APK
+name: Android Release APK
 
 on:
   push:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # 1️⃣ Repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      # 2️⃣ Java 17 (AGP 8.2.x için şart)
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: temurin
+          java-version: 17
 
+      # 3️⃣ Flutter 3.19.6
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.6'
+          flutter-version: "3.19.6"
+          cache: true
 
-      - name: Flutter doctor
-        run: flutter doctor -v
-
-      - name: Create local.properties
-        run: |
-          echo "flutter.sdk=$FLUTTER_ROOT" > android/local.properties
-
-generate-gradle-wrapper:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.19.6'
-
-      - name: Generate Gradle Wrapper
-        run: |
-          cd android
-          ./gradlew wrapper --gradle-version 8.2 --distribution-type all
-
-      - name: Commit Gradle Wrapper
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add android/gradle android/gradlew android/gradlew.bat
-          git commit -m "Add Gradle wrapper 8.2"
-          git push
-      - name: Install dependencies
+      # 4️⃣ Pub get
+      - name: Flutter pub get
         run: flutter pub get
 
-      - name: Decode keystore
+      # 5️⃣ 🔥 JAVA AGENT TEMİZLE (ÇOK KRİTİK)
+      - name: Clear Java agents
         run: |
-          echo "${{ secrets.KEY_STORE_BASE64 }}" | base64 --decode > android/app/jarvis-release.keystore
+          echo "JAVA_TOOL_OPTIONS="
+          echo "JAVA_OPTS="
 
-      - name: Build signed APK
+      # 6️⃣ 🔒 Gradle 8.2'ye kilitle (Flutter wrapper bunu okuyacak)
+      - name: Configure Gradle 8.2
+        run: |
+          mkdir -p android/gradle/wrapper
+          cat > android/gradle/wrapper/gradle-wrapper.properties <<EOF
+          distributionUrl=https\://services.gradle.org/distributions/gradle-8.2-all.zip
+          EOF
+
+      # 7️⃣ 🔑 Keystore oluştur
+      - name: Create keystore
+        run: |
+          echo "${{ secrets.KEY_STORE_BASE64 }}" | base64 --decode > android/app/release.keystore
+
+      # 8️⃣ 🚀 RELEASE BUILD
+      - name: Build Release APK
         env:
+          JAVA_TOOL_OPTIONS: ""
+          JAVA_OPTS: ""
           KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: flutter build apk --release
 
-      - uses: actions/upload-artifact@v4
+      # 9️⃣ 📦 APK artifact
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
           name: app-release
           path: build/app/outputs/flutter-apk/app-release.apk
