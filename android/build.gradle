@@ -1,24 +1,55 @@
-buildscript {
-    ext.kotlin_version = '1.9.10'
+plugins {
+    id "com.android.application"
+    id "org.jetbrains.kotlin.android"
+    id "dev.flutter.flutter-gradle-plugin"
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
+android {
+    namespace "com.example.silver_potato"   // ← paket adına göre DEĞİŞTİR
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.example.silver_potato" // ← paket adına göre DEĞİŞTİR
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("jarvis-release.keystore")
+            storePassword System.getenv("KEY_STORE_PASSWORD")
+            keyAlias System.getenv("KEY_ALIAS")
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile(
+                    'proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
     }
 }
 
-rootProject.buildDir = '../build'
-
-subprojects {
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
+flutter {
+    source "../.."
 }
 
-subprojects {
-    project.evaluationDependsOn(':app')
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
+dependencies {
+    // Flutter zaten bağımlılıkları yönetiyor
 }
