@@ -1,0 +1,67 @@
+name: Android Release APK
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Repo’yu çek
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # 2️⃣ Java 17 (AGP 8.x için şart)
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      # 3️⃣ Flutter kur
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.19.6"
+          cache: true
+
+      # 4️⃣ Pub paketleri
+      - name: Flutter pub get
+        run: flutter pub get
+
+      # 5️⃣ 🔥 GRADLE WRAPPER’I ZORLA OLUŞTUR (KRİTİK ADIM)
+      - name: Generate Gradle Wrapper 8.2
+        run: |
+          cd android
+          gradle wrapper --gradle-version 8.2 --distribution-type all
+          chmod +x gradlew
+
+      # 6️⃣ Wrapper kontrol (log’da göreceksin)
+      - name: Check Gradle Wrapper
+        run: |
+          ls -la android
+          ls -la android/gradle/wrapper
+          cat android/gradle/wrapper/gradle-wrapper.properties
+
+      # 7️⃣ 🔑 Keystore’u oluştur (GitHub Secrets’tan)
+      - name: Create keystore file
+        run: |
+          echo "${{ secrets.KEY_STORE_BASE64 }}" | base64 --decode > android/app/release.keystore
+
+      # 8️⃣ Release APK build
+      - name: Build Release APK
+        env:
+          KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: flutter build apk --release
+
+      # 9️⃣ APK artifact olarak yükle
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
