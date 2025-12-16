@@ -32,35 +32,26 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
-      # 5️⃣ 🔥 JAVA AGENT TEMİZLE (KRİTİK)
+      # 5️⃣ 🔥 JAVA AGENT TEMİZLE (ÇOK KRİTİK)
       - name: Clear Java agents
         run: |
           echo "JAVA_TOOL_OPTIONS="
           echo "JAVA_OPTS="
 
       # 6️⃣ 🔒 Gradle 8.2'ye kilitle
-      - name: Configure Gradle 8.2 Wrapper
+      - name: Configure Gradle 8.2
         run: |
           mkdir -p android/gradle/wrapper
           cat > android/gradle/wrapper/gradle-wrapper.properties <<EOF
           distributionUrl=https\://services.gradle.org/distributions/gradle-8.2-all.zip
           EOF
 
-      # 7️⃣ 🧪 Gradle versiyon kontrol
-      - name: Verify Gradle Version
-        env:
-          JAVA_TOOL_OPTIONS: ""
-          JAVA_OPTS: ""
-        run: |
-          cd android
-          ./gradlew --version
-
-      # 8️⃣ 🔑 Keystore
+      # 7️⃣ 🔑 Keystore
       - name: Create keystore
         run: |
           echo "${{ secrets.KEY_STORE_BASE64 }}" | base64 --decode > android/app/release.keystore
 
-      # 9️⃣ 🚀 Release APK
+      # 8️⃣ 🚀 RELEASE BUILD (WRAPPER BURADA OLUŞUR)
       - name: Build Release APK
         env:
           JAVA_TOOL_OPTIONS: ""
@@ -70,7 +61,7 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: flutter build apk --release
 
-      # 🔟 📦 APK artifact
+      # 9️⃣ 📦 APK artifact
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
