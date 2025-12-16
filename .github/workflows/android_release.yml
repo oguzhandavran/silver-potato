@@ -14,14 +14,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Java 17 (AGP 8.2.x şartı)
+      # 2️⃣ Java 17
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
-      # 3️⃣ Flutter 3.19.6 (STABLE)
+      # 3️⃣ Flutter 3.19.6
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -32,40 +32,45 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
-      # 5️⃣ 🔥 GRADLE 9'U BYPASS ET – GRADLE 8.2'Yİ ZORLA
-      - name: Force Gradle 8.2
+      # 5️⃣ 🔥 JAVA AGENT TEMİZLE (KRİTİK)
+      - name: Clear Java agents
+        run: |
+          echo "JAVA_TOOL_OPTIONS="
+          echo "JAVA_OPTS="
+
+      # 6️⃣ 🔒 Gradle 8.2'ye kilitle
+      - name: Configure Gradle 8.2 Wrapper
         run: |
           mkdir -p android/gradle/wrapper
-
           cat > android/gradle/wrapper/gradle-wrapper.properties <<EOF
           distributionUrl=https\://services.gradle.org/distributions/gradle-8.2-all.zip
           EOF
 
-          curl -sL https://services.gradle.org/distributions/gradle-8.2-all.zip -o gradle.zip
-          unzip -q gradle.zip
-          cp gradle-8.2/bin/gradle android/gradlew
-          chmod +x android/gradlew
-
-      # 6️⃣ ✅ KONTROL – BURADA MUTLAKA 8.2 YAZMALI
+      # 7️⃣ 🧪 Gradle versiyon kontrol
       - name: Verify Gradle Version
+        env:
+          JAVA_TOOL_OPTIONS: ""
+          JAVA_OPTS: ""
         run: |
           cd android
           ./gradlew --version
 
-      # 7️⃣ 🔑 Keystore (Secrets → file)
+      # 8️⃣ 🔑 Keystore
       - name: Create keystore
         run: |
           echo "${{ secrets.KEY_STORE_BASE64 }}" | base64 --decode > android/app/release.keystore
 
-      # 8️⃣ Release APK build
+      # 9️⃣ 🚀 Release APK
       - name: Build Release APK
         env:
+          JAVA_TOOL_OPTIONS: ""
+          JAVA_OPTS: ""
           KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: flutter build apk --release
 
-      # 9️⃣ APK’yi artifact olarak al
+      # 🔟 📦 APK artifact
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
