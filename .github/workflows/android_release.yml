@@ -10,44 +10,50 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Repo’yu çek
-      - name: Checkout repo
+      # 1️⃣ Repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Java 17 (AGP 8.x için şart)
+      # 2️⃣ Java 17 (AGP 8.2.x şartı)
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
-      # 3️⃣ Flutter kur
+      # 3️⃣ Flutter 3.19.6 (STABLE)
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.19.6"
           cache: true
 
-      # 4️⃣ Pub paketleri
+      # 4️⃣ Pub get
       - name: Flutter pub get
         run: flutter pub get
 
-      # 5️⃣ 🔥 GRADLE WRAPPER’I ZORLA OLUŞTUR (KRİTİK ADIM)
-      - name: Generate Gradle Wrapper 8.2
+      # 5️⃣ 🔥 GRADLE 9'U BYPASS ET – GRADLE 8.2'Yİ ZORLA
+      - name: Force Gradle 8.2
+        run: |
+          mkdir -p android/gradle/wrapper
+
+          cat > android/gradle/wrapper/gradle-wrapper.properties <<EOF
+          distributionUrl=https\://services.gradle.org/distributions/gradle-8.2-all.zip
+          EOF
+
+          curl -sL https://services.gradle.org/distributions/gradle-8.2-all.zip -o gradle.zip
+          unzip -q gradle.zip
+          cp gradle-8.2/bin/gradle android/gradlew
+          chmod +x android/gradlew
+
+      # 6️⃣ ✅ KONTROL – BURADA MUTLAKA 8.2 YAZMALI
+      - name: Verify Gradle Version
         run: |
           cd android
-          gradle wrapper --gradle-version 8.2 --distribution-type all
-          chmod +x gradlew
+          ./gradlew --version
 
-      # 6️⃣ Wrapper kontrol (log’da göreceksin)
-      - name: Check Gradle Wrapper
-        run: |
-          ls -la android
-          ls -la android/gradle/wrapper
-          cat android/gradle/wrapper/gradle-wrapper.properties
-
-      # 7️⃣ 🔑 Keystore’u oluştur (GitHub Secrets’tan)
-      - name: Create keystore file
+      # 7️⃣ 🔑 Keystore (Secrets → file)
+      - name: Create keystore
         run: |
           echo "${{ secrets.KEY_STORE_BASE64 }}" | base64 --decode > android/app/release.keystore
 
@@ -59,7 +65,7 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: flutter build apk --release
 
-      # 9️⃣ APK artifact olarak yükle
+      # 9️⃣ APK’yi artifact olarak al
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
